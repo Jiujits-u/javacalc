@@ -9,51 +9,92 @@ public class CalculatorFrame extends JFrame {
 
     public CalculatorFrame() {
         setTitle("Калькулятор");
-        setSize(780, 520);
+        setSize(520, 700);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
 
-        JPanel mainPanel = new JPanel();
+        JPanel mainPanel = new JPanel(new BorderLayout(0, 10));
         mainPanel.setBackground(new Color(24, 24, 24));
-        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // ===== ВЕРХ =====
-        JPanel topPanel = new JPanel();
-        topPanel.setBackground(new Color(24, 24, 24));
-        topPanel.setLayout(new BorderLayout());
-        topPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 10, 15));
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(24, 24, 24));
 
         JLabel modeLabel = new JLabel("Программист");
         modeLabel.setForeground(Color.WHITE);
         modeLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        headerPanel.add(modeLabel, BorderLayout.WEST);
 
-        topPanel.add(modeLabel, BorderLayout.WEST);
-
-        // ===== ДИСПЛЕЙ =====
         display = new JTextField("0");
         display.setEditable(false);
-        display.setBackground(new Color(30, 30, 30));
+        display.setBackground(new Color(24, 24, 24));
         display.setForeground(Color.WHITE);
-        display.setFont(new Font("Consolas", Font.BOLD, 36));
+        display.setFont(new Font("Consolas", Font.BOLD, 42));
         display.setHorizontalAlignment(JTextField.RIGHT);
-        display.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        display.setBorder(BorderFactory.createLineBorder(new Color(80, 80, 80), 1));
+        display.setPreferredSize(new Dimension(0, 80));
 
         JPanel displayPanel = new JPanel(new BorderLayout());
         displayPanel.setBackground(new Color(24, 24, 24));
-        displayPanel.setBorder(BorderFactory.createEmptyBorder(0, 15, 10, 15));
         displayPanel.add(display, BorderLayout.CENTER);
 
-        // ===== ЦЕНТР =====
-        JPanel centerPanel = new JPanel();
-        centerPanel.setBackground(new Color(24, 24, 24));
-        centerPanel.setLayout(new BorderLayout());
+        JPanel topPanel = new JPanel(new BorderLayout(0, 12));
+        topPanel.setBackground(new Color(24, 24, 24));
+        topPanel.add(headerPanel, BorderLayout.NORTH);
+        topPanel.add(displayPanel, BorderLayout.CENTER);
 
-        centerPanel.add(displayPanel, BorderLayout.NORTH);
+        JPanel buttonsPanel = new JPanel(new GridLayout(4, 3, 10, 10));
+        buttonsPanel.setBackground(new Color(24, 24, 24));
+
+        String[] buttons = {
+                "7", "8", "9",
+                "4", "5", "6",
+                "1", "2", "3",
+                "0", ".", "C"
+        };
+
+        for (String text : buttons) {
+            JButton button = createButton(text);
+            buttonsPanel.add(button);
+        }
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
-        mainPanel.add(centerPanel, BorderLayout.CENTER);
+        mainPanel.add(buttonsPanel, BorderLayout.CENTER);
 
         setContentPane(mainPanel);
+    }
+
+    private JButton createButton(String text) {
+        JButton button = new JButton(text);
+
+        button.setFocusPainted(false);
+        button.setBackground(new Color(45, 45, 45));
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 22));
+
+        button.addActionListener(e -> onButtonClick(text));
+
+        return button;
+    }
+
+    private void onButtonClick(String text) {
+        if (text.equals("C")) {
+            display.setText("0");
+            return;
+        }
+
+        if (text.equals(".")) {
+            if (!display.getText().contains(".")) {
+                display.setText(display.getText() + ".");
+            }
+            return;
+        }
+
+        if (display.getText().equals("0")) {
+            display.setText(text);
+        } else {
+            display.setText(display.getText() + text);
+        }
     }
 }
