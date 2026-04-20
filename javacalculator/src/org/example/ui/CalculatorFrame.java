@@ -162,22 +162,31 @@ public class CalculatorFrame extends JFrame {
         double secondNumber = Double.parseDouble(display.getText());
         double result = 0;
 
-        switch (operator) {
-            case "+":
-                result = firstNumber + secondNumber;
-                break;
-            case "-":
-                result = firstNumber - secondNumber;
-                break;
-            case "*":
-                result = firstNumber * secondNumber;
-                break;
-            case "/":
-                result = firstNumber / secondNumber;
-                break;
+        try {
+            switch (operator) {
+                case "+":
+                    result = firstNumber + secondNumber;
+                    break;
+                case "-":
+                    result = firstNumber - secondNumber;
+                    break;
+                case "*":
+                    result = firstNumber * secondNumber;
+                    break;
+                case "/":
+                    if (secondNumber == 0) {
+                        throw new ArithmeticException();
+                    }
+                    result = firstNumber / secondNumber;
+                    break;
+            }
+
+            display.setText(formatNumber(result));
+
+        } catch (ArithmeticException e) {
+            display.setText("Ошибка");
         }
 
-        display.setText(formatNumber(result));
         operator = "";
         startNewNumber = true;
     }
