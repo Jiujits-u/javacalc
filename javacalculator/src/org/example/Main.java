@@ -1,7 +1,14 @@
 package org.example;
 
+import org.example.ui.CalculatorFrame;
+
+import javax.swing.SwingUtilities;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Calculator application started");
+        SwingUtilities.invokeLater(() -> {
+            CalculatorFrame frame = new CalculatorFrame();
+            frame.setVisible(true);
+        });
     }
 }
