@@ -7,6 +7,10 @@ public class CalculatorFrame extends JFrame {
 
     private JTextField display;
 
+    private double firstNumber = 0;
+    private String operator = "";
+    private boolean startNewNumber = true;
+
     public CalculatorFrame() {
         setTitle("Калькулятор");
         setSize(520, 700);
@@ -44,19 +48,26 @@ public class CalculatorFrame extends JFrame {
         topPanel.add(headerPanel, BorderLayout.NORTH);
         topPanel.add(displayPanel, BorderLayout.CENTER);
 
-        JPanel buttonsPanel = new JPanel(new GridLayout(4, 3, 10, 10));
+        JPanel buttonsPanel = new JPanel(new GridLayout(5, 4, 10, 10));
         buttonsPanel.setBackground(new Color(24, 24, 24));
 
         String[] buttons = {
-                "7", "8", "9",
-                "4", "5", "6",
-                "1", "2", "3",
-                "0", ".", "C"
+                "C", "", "", "/",
+                "7", "8", "9", "*",
+                "4", "5", "6", "-",
+                "1", "2", "3", "+",
+                "0", ".", "=", ""
         };
 
         for (String text : buttons) {
-            JButton button = createButton(text);
-            buttonsPanel.add(button);
+            if (text.isEmpty()) {
+                JPanel empty = new JPanel();
+                empty.setBackground(new Color(24, 24, 24));
+                buttonsPanel.add(empty);
+            } else {
+                JButton button = createButton(text);
+                buttonsPanel.add(button);
+            }
         }
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
@@ -69,9 +80,14 @@ public class CalculatorFrame extends JFrame {
         JButton button = new JButton(text);
 
         button.setFocusPainted(false);
-        button.setBackground(new Color(45, 45, 45));
         button.setForeground(Color.WHITE);
         button.setFont(new Font("Arial", Font.BOLD, 22));
+
+        if (text.matches("[0-9.]")) {
+            button.setBackground(new Color(45, 45, 45));
+        } else {
+            button.setBackground(new Color(60, 60, 60));
+        }
 
         button.addActionListener(e -> onButtonClick(text));
 
@@ -79,22 +95,97 @@ public class CalculatorFrame extends JFrame {
     }
 
     private void onButtonClick(String text) {
-        if (text.equals("C")) {
-            display.setText("0");
+        if (text.matches("[0-9]")) {
+            appendDigit(text);
             return;
         }
 
         if (text.equals(".")) {
-            if (!display.getText().contains(".")) {
-                display.setText(display.getText() + ".");
-            }
+            appendDot();
             return;
         }
 
-        if (display.getText().equals("0")) {
-            display.setText(text);
-        } else {
-            display.setText(display.getText() + text);
+        if (text.equals("C")) {
+            clearAll();
+            return;
         }
+
+        if (text.equals("=")) {
+            calculateResult();
+            return;
+        }
+
+        if (text.equals("+") || text.equals("-") || text.equals("*") || text.equals("/")) {
+            setOperator(text);
+        }
+    }
+
+    private void appendDigit(String digit) {
+        if (startNewNumber || display.getText().equals("0")) {
+            display.setText(digit);
+            startNewNumber = false;
+        } else {
+            display.setText(display.getText() + digit);
+        }
+    }
+
+    private void appendDot() {
+        if (startNewNumber) {
+            display.setText("0.");
+            startNewNumber = false;
+            return;
+        }
+
+        if (!display.getText().contains(".")) {
+            display.setText(display.getText() + ".");
+        }
+    }
+
+    private void clearAll() {
+        display.setText("0");
+        firstNumber = 0;
+        operator = "";
+        startNewNumber = true;
+    }
+
+    private void setOperator(String op) {
+        firstNumber = Double.parseDouble(display.getText());
+        operator = op;
+        startNewNumber = true;
+    }
+
+    private void calculateResult() {
+        if (operator.isEmpty()) {
+            return;
+        }
+
+        double secondNumber = Double.parseDouble(display.getText());
+        double result = 0;
+
+        switch (operator) {
+            case "+":
+                result = firstNumber + secondNumber;
+                break;
+            case "-":
+                result = firstNumber - secondNumber;
+                break;
+            case "*":
+                result = firstNumber * secondNumber;
+                break;
+            case "/":
+                result = firstNumber / secondNumber;
+                break;
+        }
+
+        display.setText(formatNumber(result));
+        operator = "";
+        startNewNumber = true;
+    }
+
+    private String formatNumber(double number) {
+        if (number == (long) number) {
+            return String.valueOf((long) number);
+        }
+        return String.valueOf(number);
     }
 }
