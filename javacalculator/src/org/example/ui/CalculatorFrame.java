@@ -14,14 +14,32 @@ public class CalculatorFrame extends JFrame {
 
     public CalculatorFrame() {
         setTitle("Калькулятор");
-        setSize(520, 700);
+        setSize(780, 620);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
 
-        JPanel mainPanel = new JPanel(new BorderLayout(0, 12));
+        JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(new Color(18, 18, 18));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(14, 14, 14, 14));
+
+        JPanel contentPanel = new JPanel(new BorderLayout(12, 0));
+        contentPanel.setBackground(new Color(18, 18, 18));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(14, 14, 14, 14));
+
+        JPanel calculatorPanel = createCalculatorPanel();
+        JPanel memoryPanel = createMemoryPanel();
+
+        contentPanel.add(calculatorPanel, BorderLayout.CENTER);
+        contentPanel.add(memoryPanel, BorderLayout.EAST);
+
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
+
+        setContentPane(mainPanel);
+    }
+
+    private JPanel createCalculatorPanel() {
+        JPanel calculatorPanel = new JPanel(new BorderLayout(0, 12));
+        calculatorPanel.setBackground(new Color(18, 18, 18));
 
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(18, 18, 18));
@@ -30,11 +48,6 @@ public class CalculatorFrame extends JFrame {
         modeLabel.setForeground(Color.WHITE);
         modeLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
         headerPanel.add(modeLabel, BorderLayout.WEST);
-
-        JLabel memoryLabel = new JLabel("Память");
-        memoryLabel.setForeground(new Color(220, 220, 220));
-        memoryLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        headerPanel.add(memoryLabel, BorderLayout.EAST);
 
         display = new JTextField("0");
         display.setEditable(false);
@@ -48,11 +61,6 @@ public class CalculatorFrame extends JFrame {
         JPanel displayPanel = new JPanel(new BorderLayout());
         displayPanel.setBackground(new Color(18, 18, 18));
         displayPanel.add(display, BorderLayout.CENTER);
-
-        JPanel topPanel = new JPanel(new BorderLayout(0, 12));
-        topPanel.setBackground(new Color(18, 18, 18));
-        topPanel.add(headerPanel, BorderLayout.NORTH);
-        topPanel.add(displayPanel, BorderLayout.CENTER);
 
         JPanel buttonsPanel = new JPanel(new GridLayout(5, 4, 8, 8));
         buttonsPanel.setBackground(new Color(18, 18, 18));
@@ -75,10 +83,34 @@ public class CalculatorFrame extends JFrame {
             }
         }
 
-        mainPanel.add(topPanel, BorderLayout.NORTH);
-        mainPanel.add(buttonsPanel, BorderLayout.CENTER);
+        calculatorPanel.add(headerPanel, BorderLayout.NORTH);
+        calculatorPanel.add(displayPanel, BorderLayout.CENTER);
+        calculatorPanel.add(buttonsPanel, BorderLayout.SOUTH);
 
-        setContentPane(mainPanel);
+        return calculatorPanel;
+    }
+
+    private JPanel createMemoryPanel() {
+        JPanel memoryPanel = new JPanel(new BorderLayout());
+        memoryPanel.setBackground(new Color(24, 24, 24));
+        memoryPanel.setPreferredSize(new Dimension(190, 0));
+        memoryPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+
+        JLabel memoryTitle = new JLabel("Память");
+        memoryTitle.setForeground(Color.WHITE);
+        memoryTitle.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        memoryTitle.setBorder(BorderFactory.createEmptyBorder(6, 6, 12, 6));
+
+        JLabel memoryInfo = new JLabel("<html>В памяти ничего не сохранено</html>");
+        memoryInfo.setForeground(new Color(210, 210, 210));
+        memoryInfo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        memoryInfo.setBorder(BorderFactory.createEmptyBorder(8, 6, 6, 6));
+        memoryInfo.setVerticalAlignment(SwingConstants.TOP);
+
+        memoryPanel.add(memoryTitle, BorderLayout.NORTH);
+        memoryPanel.add(memoryInfo, BorderLayout.CENTER);
+
+        return memoryPanel;
     }
 
     private JButton createButton(String text) {
