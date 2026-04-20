@@ -1,6 +1,7 @@
 package org.example.ui;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class CalculatorFrame extends JFrame {
@@ -18,38 +19,43 @@ public class CalculatorFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
 
-        JPanel mainPanel = new JPanel(new BorderLayout(0, 10));
-        mainPanel.setBackground(new Color(24, 24, 24));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        JPanel mainPanel = new JPanel(new BorderLayout(0, 12));
+        mainPanel.setBackground(new Color(18, 18, 18));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(14, 14, 14, 14));
 
         JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.setBackground(new Color(24, 24, 24));
+        headerPanel.setBackground(new Color(18, 18, 18));
 
         JLabel modeLabel = new JLabel("Программист");
         modeLabel.setForeground(Color.WHITE);
-        modeLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        modeLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
         headerPanel.add(modeLabel, BorderLayout.WEST);
+
+        JLabel memoryLabel = new JLabel("Память");
+        memoryLabel.setForeground(new Color(220, 220, 220));
+        memoryLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        headerPanel.add(memoryLabel, BorderLayout.EAST);
 
         display = new JTextField("0");
         display.setEditable(false);
-        display.setBackground(new Color(24, 24, 24));
+        display.setBackground(new Color(18, 18, 18));
         display.setForeground(Color.WHITE);
         display.setFont(new Font("Consolas", Font.BOLD, 42));
         display.setHorizontalAlignment(JTextField.RIGHT);
-        display.setBorder(BorderFactory.createLineBorder(new Color(80, 80, 80), 1));
-        display.setPreferredSize(new Dimension(0, 80));
+        display.setBorder(new LineBorder(new Color(90, 90, 90), 1));
+        display.setPreferredSize(new Dimension(0, 82));
 
         JPanel displayPanel = new JPanel(new BorderLayout());
-        displayPanel.setBackground(new Color(24, 24, 24));
+        displayPanel.setBackground(new Color(18, 18, 18));
         displayPanel.add(display, BorderLayout.CENTER);
 
         JPanel topPanel = new JPanel(new BorderLayout(0, 12));
-        topPanel.setBackground(new Color(24, 24, 24));
+        topPanel.setBackground(new Color(18, 18, 18));
         topPanel.add(headerPanel, BorderLayout.NORTH);
         topPanel.add(displayPanel, BorderLayout.CENTER);
 
-        JPanel buttonsPanel = new JPanel(new GridLayout(5, 4, 10, 10));
-        buttonsPanel.setBackground(new Color(24, 24, 24));
+        JPanel buttonsPanel = new JPanel(new GridLayout(5, 4, 8, 8));
+        buttonsPanel.setBackground(new Color(18, 18, 18));
 
         String[] buttons = {
                 "C", "", "", "/",
@@ -62,11 +68,10 @@ public class CalculatorFrame extends JFrame {
         for (String text : buttons) {
             if (text.isEmpty()) {
                 JPanel empty = new JPanel();
-                empty.setBackground(new Color(24, 24, 24));
+                empty.setBackground(new Color(18, 18, 18));
                 buttonsPanel.add(empty);
             } else {
-                JButton button = createButton(text);
-                buttonsPanel.add(button);
+                buttonsPanel.add(createButton(text));
             }
         }
 
@@ -80,15 +85,18 @@ public class CalculatorFrame extends JFrame {
         JButton button = new JButton(text);
 
         button.setFocusPainted(false);
-        button.setForeground(Color.WHITE);
-        button.setFont(new Font("Arial", Font.BOLD, 22));
+        button.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        button.setBorder(new LineBorder(new Color(70, 70, 70), 1));
 
-        if (text.matches("[0-9.]")) {
+        if (text.matches("[0-9]") || text.equals(".")) {
             button.setBackground(new Color(45, 45, 45));
+        } else if (text.equals("=")) {
+            button.setBackground(new Color(88, 88, 88));
         } else {
-            button.setBackground(new Color(60, 60, 60));
+            button.setBackground(new Color(58, 58, 58));
         }
 
+        button.setForeground(Color.WHITE);
         button.addActionListener(e -> onButtonClick(text));
 
         return button;
@@ -121,7 +129,7 @@ public class CalculatorFrame extends JFrame {
     }
 
     private void appendDigit(String digit) {
-        if (startNewNumber || display.getText().equals("0")) {
+        if (startNewNumber || display.getText().equals("0") || display.getText().equals("Ошибка")) {
             display.setText(digit);
             startNewNumber = false;
         } else {
@@ -130,6 +138,12 @@ public class CalculatorFrame extends JFrame {
     }
 
     private void appendDot() {
+        if (display.getText().equals("Ошибка")) {
+            display.setText("0.");
+            startNewNumber = false;
+            return;
+        }
+
         if (startNewNumber) {
             display.setText("0.");
             startNewNumber = false;
@@ -149,13 +163,17 @@ public class CalculatorFrame extends JFrame {
     }
 
     private void setOperator(String op) {
+        if (display.getText().equals("Ошибка")) {
+            return;
+        }
+
         firstNumber = Double.parseDouble(display.getText());
         operator = op;
         startNewNumber = true;
     }
 
     private void calculateResult() {
-        if (operator.isEmpty()) {
+        if (operator.isEmpty() || display.getText().equals("Ошибка")) {
             return;
         }
 
