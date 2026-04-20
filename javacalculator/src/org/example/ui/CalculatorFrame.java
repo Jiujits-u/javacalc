@@ -5,6 +5,8 @@ import java.awt.*;
 
 public class CalculatorFrame extends JFrame {
 
+    private JTextField display;
+
     public CalculatorFrame() {
         setTitle("Калькулятор");
         setSize(780, 520);
@@ -16,49 +18,38 @@ public class CalculatorFrame extends JFrame {
         mainPanel.setBackground(new Color(24, 24, 24));
         mainPanel.setLayout(new BorderLayout());
 
+        // ===== ВЕРХ =====
         JPanel topPanel = new JPanel();
         topPanel.setBackground(new Color(24, 24, 24));
         topPanel.setLayout(new BorderLayout());
-        topPanel.setBorder(BorderFactory.createEmptyBorder(18, 18, 10, 18));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 10, 15));
 
         JLabel modeLabel = new JLabel("Программист");
         modeLabel.setForeground(Color.WHITE);
-        modeLabel.setFont(new Font("Arial", Font.BOLD, 24));
-
-        JLabel memoryLabel = new JLabel("Память");
-        memoryLabel.setForeground(Color.WHITE);
-        memoryLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        memoryLabel.setHorizontalAlignment(SwingConstants.LEFT);
-
-        JPanel rightTopPanel = new JPanel(new BorderLayout());
-        rightTopPanel.setBackground(new Color(24, 24, 24));
-        rightTopPanel.setPreferredSize(new Dimension(180, 50));
-        rightTopPanel.add(memoryLabel, BorderLayout.NORTH);
+        modeLabel.setFont(new Font("Arial", Font.BOLD, 22));
 
         topPanel.add(modeLabel, BorderLayout.WEST);
-        topPanel.add(rightTopPanel, BorderLayout.EAST);
 
+        // ===== ДИСПЛЕЙ =====
+        display = new JTextField("0");
+        display.setEditable(false);
+        display.setBackground(new Color(30, 30, 30));
+        display.setForeground(Color.WHITE);
+        display.setFont(new Font("Consolas", Font.BOLD, 36));
+        display.setHorizontalAlignment(JTextField.RIGHT);
+        display.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JPanel displayPanel = new JPanel(new BorderLayout());
+        displayPanel.setBackground(new Color(24, 24, 24));
+        displayPanel.setBorder(BorderFactory.createEmptyBorder(0, 15, 10, 15));
+        displayPanel.add(display, BorderLayout.CENTER);
+
+        // ===== ЦЕНТР =====
         JPanel centerPanel = new JPanel();
         centerPanel.setBackground(new Color(24, 24, 24));
-        centerPanel.setLayout(new GridLayout(1, 2, 12, 0));
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 18, 18, 18));
+        centerPanel.setLayout(new BorderLayout());
 
-        JPanel calculatorArea = new JPanel();
-        calculatorArea.setBackground(new Color(24, 24, 24));
-
-        JPanel memoryArea = new JPanel();
-        memoryArea.setBackground(new Color(24, 24, 24));
-        memoryArea.setLayout(new BorderLayout());
-
-        JLabel memoryInfo = new JLabel("В памяти ничего не сохранено");
-        memoryInfo.setForeground(new Color(210, 210, 210));
-        memoryInfo.setFont(new Font("Arial", Font.PLAIN, 14));
-        memoryInfo.setBorder(BorderFactory.createEmptyBorder(25, 0, 0, 0));
-
-        memoryArea.add(memoryInfo, BorderLayout.NORTH);
-
-        centerPanel.add(calculatorArea);
-        centerPanel.add(memoryArea);
+        centerPanel.add(displayPanel, BorderLayout.NORTH);
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(centerPanel, BorderLayout.CENTER);
